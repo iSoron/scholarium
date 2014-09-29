@@ -1,0 +1,12 @@
+{
+  "name": "Scholarium",
+  "version": "0.1-pre",
+  "main": "index.html",
+  "window": {
+    "toolbar": false,
+    "min_width": 400,
+    "min_height": 400,
+    "width": 900,
+    "height": 600
+  }
+}

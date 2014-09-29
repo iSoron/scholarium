@@ -1,0 +1,29 @@
+@import url(http://fonts.googleapis.com/css?family=Dosis:400,700&subset=latin,latin-ext);
+
+body {
+  background-color: #066;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+* {
+    font-family: 'Dosis';
+}
+
+#scopus-iframe {
+  display: none;
+}
+
+.node_tooltip {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.node_tooltip emph {
+    color: #fff;
+    font-weight: bold;
+}

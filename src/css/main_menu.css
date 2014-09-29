@@ -1,0 +1,36 @@
+.main_menu {
+    text-align: center;
+    font-size: 16px;
+    font-family: sans;
+    height: 100vh;
+}
+
+.main_menu input {
+    color: #000;
+    background-color: #fff;
+    border: 0;
+    border: 2px solid #fff;
+  
+    font-size: 20px;
+	min-width: 600px;
+    padding: 8px 12px;
+    outline: 0;
+	
+}
+
+.main_menu h1 {
+    color: #fff;
+    font-size: 60px;
+}
+
+.main_menu .frame {
+    margin: 0 auto;
+    padding: 1px 1px 50px 1px;
+    background-color: rgba(0,0,0,0);
+    box-shadow: 2px 2px 100px #388;
+    width: 800px;
+    
+    top: 50%;
+    position: relative;
+    -webkit-transform: translateY(-50%);
+}
