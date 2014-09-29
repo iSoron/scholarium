@@ -1,8 +1,10 @@
 var visjs_options = {
   nodes: {
+    borderWidth: 3,
+    borderWidthSelected: 3,
     color: {
-        border: '#bbb',
-        background: '#fff',
+      border: '#fff',
+      background: '#fff',
       highlight: {
         border: '#fff',
         background: '#dd3'
@@ -48,5 +50,5 @@ var visjs_options = {
   }
 };
 
-var seed_url = 'http://www.scopus.com/results/results.url?sort=plf-f&src=s&st1=urea+permeation+immobilized&sid=B0FE19FE3CFF4CCF86DD857756E90636.FZg2ODcJC9ArCe8WOZPvA%3a1400&sot=b&sdt=b&sl=34&s=TITLE%28urea+permeation+immobilized%29&origin=searchbasic&txGid=B0FE19FE3CFF4CCF86DD857756E90636.FZg2ODcJC9ArCe8WOZPvA%3a140';
-
+var node_queued_color = jQuery.extend({},visjs_options.nodes.color);
+node_queued_color.background = '#da2d2f';

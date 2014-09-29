@@ -1,6 +1,6 @@
 function ScopusParser() {};
 
-ScopusParser.prototype.parse = function(url, callback)
+ScopusParser.prototype._parse_results_page = function(url, callback)
 {
     var iframe = document.createElement("iframe");
     $(iframe).hide();
@@ -15,6 +15,7 @@ ScopusParser.prototype.parse = function(url, callback)
         if(select_pages.val() != 200) {
             select_pages.val(200);
             select_pages.change();
+            return;
         }
 
         $(ibody).find(".resultItemLists li").each(function(index, li)
@@ -55,4 +56,11 @@ ScopusParser.prototype.parse = function(url, callback)
         callback(articles);
         document.body.removeChild(iframe);
     });
+}
+
+ScopusParser.prototype.parse = function(url, callback)
+{
+    if(url === undefined) return;
+    //if(url.indexOf("/results/") > 0 || url.indexOf("/search/") > 0)
+    this._parse_results_page(url, callback);
 }

@@ -51,14 +51,22 @@ ScholarCrawler.prototype.process = function(url, parent_node)
 
 			if(crawler.node_ids.indexOf(child['id']) == -1)
 			{
+				if(child['depth'] < crawler.max_depth && child['n_citations'] > 0) {
+					crawler.push(child['citations_url'], child);
+					child.color = node_queued_color;
+				}
+
 				crawler.node_ids.push(child['id']);
 				crawler.nodes.add(child);
-
-				if(child['depth'] < crawler.max_depth) {
-					crawler.push(child['citations_url'], child);
-				}
 			}
 		}
+
+		if(!(parent_node === null))
+		{
+			parent_node.color = visjs_options.nodes.color;
+			crawler.nodes.update(parent_node);
+		}
+
 	});
 };
 
