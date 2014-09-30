@@ -1,8 +1,6 @@
 function ScholarCrawler(parser, nodes, edges)
 {
   this.stack = [];
-  this.edge_ids = {};
-  this.node_ids = {};
 
   this.nodes = nodes;
   this.edges = edges;
@@ -121,9 +119,8 @@ ScholarCrawler.prototype._add_child_article = function(child_article, parent_nod
 
     edge._id = edge.id;
 
-    if(!(edge._id in this.edge_ids))
+    if(this.edges.getIds().indexOf(edge._id) < 0)
     {
-      this.edge_ids[edge._id] = true;
       this.edges.add(edge);
       citations_db.insert(edge);
     }
@@ -136,9 +133,8 @@ ScholarCrawler.prototype._add_child_article = function(child_article, parent_nod
   else
     this.push(child_node, levels-1);
 
-  if(!(child_node._id in this.node_ids))
+  if(this.nodes.getIds().indexOf(child_node._id) < 0)
   {
-    this.node_ids[child_node._id] = true;
     this.nodes.add(child_node);
   }
   else
@@ -155,14 +151,14 @@ ScholarCrawler.prototype.push = function(parent_node, levels)
   if(!parent_node.is_dummy)
   {
     parent_node.group = "processing";
-    if(parent_node._id in this.node_ids)
+    if(this.nodes.getIds().indexOf(parent_node._id) >= 0)
     {
       this.nodes.update(parent_node);
     }
   }
 };
 
-ScholarCrawler.prototype.next = function()
+ScholarCrawler.prototype.start = function()
 {
   if(this.stack.length > 0)
   {
@@ -171,5 +167,5 @@ ScholarCrawler.prototype.next = function()
   }
 
   var crawler = this;
-  setTimeout(function() { crawler.next() }, 1000);
+  setTimeout(function() { crawler.start() }, 1000);
 };

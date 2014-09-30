@@ -4,7 +4,7 @@ var nedb = require('nedb');
 var path = require('path');
 var win = gui.Window.get();
 
-win.maximize();
+//win.maximize();
 
 function createDB(name)
 {
@@ -22,5 +22,6 @@ function open_external(url)
 
 var articles_db = createDB("articles");
 var citations_db = createDB("citations");
+var maps_db = createDB("maps");
 
 new MainMenuView().render(document.getElementById("main"));
