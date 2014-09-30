@@ -23,7 +23,12 @@ html, body {
     color: rgba(255, 255, 255, 0.5);
 }
 
-.node_tooltip emph {
+.node_tooltip a {
     color: #fff;
     font-weight: bold;
+	text-decoration: none;
+}
+
+.node_tooltip a:hover {
+	text-decoration: undeline;
 }

@@ -1,4 +1,6 @@
-function ScopusParser() {};
+function ScopusParser()
+{
+};
 
 ScopusParser.prototype._parse_results_page = function(url, callback)
 {
@@ -23,32 +25,32 @@ ScopusParser.prototype._parse_results_page = function(url, callback)
             var article = {};
 
             $(li).find(".docTitle a").each(function(index, tag) {
-                article['url'] = tag.href;
-                article['title'] = $(tag).text();
+                article.url = tag.href;
+                article.title = $(tag).text();
             });
 
             $(li).find("a[href*='citedby']").each(function(index, tag) {
-                article['citations_url'] = tag.href;
-                article['n_citations'] = parseInt($(tag).text());
+                article.citations_url = tag.href;
+                article.n_citations = parseInt($(tag).text());
             });
             
             $(li).find('.hidden-label').each(function(index, tag) {
                 if($(tag).text().indexOf("Year") == 0)
-                    article['year'] = parseInt($.trim($(tag).next().text()));
+                    article.year = parseInt($.trim($(tag).next().text()));
 
                 if($(tag).text().indexOf("Authors") == 0)
-                    article['authors'] = $.trim($(tag).next().text());
+                    article.authors = $.trim($(tag).next().text());
 
                 if($(tag).text().indexOf("Source") == 0)
-                    article['source'] = $.trim($(tag).next().text());
+                    article.source = $.trim($(tag).next().text());
             });
 
             if(!('n_citations' in article)) {
-                article['citations_url'] = undefined;
-                article['n_citations'] = 0;
+                article.citations_url = undefined;
+                article.n_citations = 0;
             }
             
-            article['id'] = $.md5(article['title'] + article['authors']);
+            article._id = $.md5(article.title + article.authors);
 
             articles.push(article);
         });

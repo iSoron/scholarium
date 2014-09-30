@@ -1,88 +1,175 @@
-function ScholarCrawler(parser, node_ids, nodes, edges)
+function ScholarCrawler(parser, nodes, edges)
 {
-	this.stack = [];
+  this.stack = [];
+  this.edge_ids = {};
+  this.node_ids = {};
 
-	this.node_ids = node_ids;
-	this.parser = parser;
-	this.nodes = nodes;
-	this.edges = edges;
+  this.nodes = nodes;
+  this.edges = edges;
+  this.parser = parser;
 
-	this.delay = 1000;
-	this.max_depth = 2;
-	this.minimum_citations = 0;
+  this.delay = 1000;
+  this.minimum_citations = 0;
 };
 
-ScholarCrawler.prototype.formatArticle = function(node)
+ScholarCrawler.prototype.article_to_node = function(article)
 {
-	node.label = '';
-	node.shape = "dot";
-	node.original_title = node.title;
-	node.title =
-		"<span class='node_tooltip'>" + node.authors +
-		"<emph> " + node.title + ".</emph> " +
-		node.source + ", " + node.year + ".</span>";
-	node.mass = node.n_citations/2 + 1;
-	node.radius = 3*Math.pow(node.n_citations, 0.8) + 3;
-	return node;
+  return {
+    id: article._id,
+    _id: article._id,
+    article: article,
+    group: 'standard',
+    label: '',
+    shape: 'dot',
+    mass: article.n_citations/2 + 1,
+    radius: 3*Math.pow(article.n_citations, 0.8) + 3,
+    title: "<span class='node_tooltip'>" + article.authors +
+      "<a href='' onclick='return open_external(\"" + article.url + "\")' target='_blank'> "
+      + article.title + ".</a> " + article.source + ", " + article.year + ".</span>"
+  };
 };
 
-ScholarCrawler.prototype.process = function(url, parent_node)
+ScholarCrawler.prototype.add_citations = function(parent_node, levels)
 {
-	var crawler = this;
+  assert(levels >= 0, "levels should be non-negative");
 
-	this.parser.parse(url, function(children)
-	{
-		for(i=0; i<children.length; i++)
-		{
-			var child = crawler.formatArticle(children[i]);
+  var crawler = this;
 
-			if(parent_node == null)
-			{
-				child['depth'] = 0;
-			}
-			else
-			{
-				child['depth'] = parent_node['depth'] + 1;
-				crawler.edges.add({"from": child['id'], "to": parent_node['id']});
-			}
+  if(parent_node.is_dummy) 
+    return this._add_citations_from_scopus(parent_node, levels);
 
-			if(child['n_citations'] < crawler.minimum_citations)
-				continue;
+  articles_db.findOne({_id: parent_node._id}, function(err, parent_article_db)
+  {
+    if(parent_article_db === null || !parent_article_db.is_cached)
+      crawler._add_citations_from_scopus(parent_node, levels);
+    else
+      crawler._add_citations_from_db(crawler.article_to_node(parent_node.article), levels);
+  });
+}
 
-			if(crawler.node_ids.indexOf(child['id']) == -1)
-			{
-				if(child['depth'] < crawler.max_depth && child['n_citations'] > 0) {
-					crawler.push(child['citations_url'], child);
-					child.color = node_queued_color;
-				}
+ScholarCrawler.prototype._add_citations_from_db = function(parent_node, levels)
+{
+  assert(levels >= 0, "levels should be non-negative");
 
-				crawler.node_ids.push(child['id']);
-				crawler.nodes.add(child);
-			}
-		}
+  var crawler = this;
+  citations_db.find({to: parent_node.article._id}, function(err, citations)
+  {
+    citations.forEach(function(citation)
+    {
+      articles_db.findOne({_id: citation.from}, function(err, child_article)
+      {
+        crawler._add_child_article(child_article, parent_node, levels);
+      });
+    });
 
-		if(!(parent_node === null))
-		{
-			parent_node.color = visjs_options.nodes.color;
-			crawler.nodes.update(parent_node);
-		}
+    parent_node.group = "standard";
+    crawler.nodes.update(parent_node);
+  });
+}
 
-	});
+ScholarCrawler.prototype._add_citations_from_scopus = function(parent_node, levels)
+{
+  assert(levels >= 0, "levels should be non-negative");
+
+  var crawler = this;
+  this.parser.parse(parent_node.article.citations_url, function(child_articles)
+  {
+    child_articles.forEach(function(child_article)
+    {
+      articles_db.findOne({_id:child_article._id}, function(err, child_article_db)
+      {
+        if(child_article_db === null)
+        {
+          child_article.is_cached = false;
+          articles_db.insert(child_article);
+          crawler._add_child_article(child_article, parent_node, levels);
+        }
+        else
+        {
+          crawler._add_child_article(child_article_db, parent_node, levels);
+        }
+      });
+    });
+
+    if(!parent_node.is_dummy)
+    {
+      parent_node.group = "standard";
+      crawler.nodes.update(parent_node);
+
+      parent_node.article.is_cached = true;
+      articles_db.update({_id: parent_node.article._id}, parent_node.article, {});
+    }
+  });
+}
+
+ScholarCrawler.prototype._add_child_article = function(child_article, parent_node, levels)
+{
+  assert(levels >= 0, "levels should be non-negative");
+
+  var child_node = this.article_to_node(child_article);
+
+  if(child_article.n_citations < this.minimum_citations)
+    return;
+
+  if(!parent_node.is_dummy)
+  {
+    edge = {
+      id: $.md5(child_node._id + parent_node._id),
+      from: child_node._id,
+      to: parent_node._id
+    };
+
+    edge._id = edge.id;
+
+    if(!(edge._id in this.edge_ids))
+    {
+      this.edge_ids[edge._id] = true;
+      this.edges.add(edge);
+      citations_db.insert(edge);
+    }
+  }
+
+  if(child_node.article.n_citations == 0)
+    child_node.group = "standard";
+  else if(levels == 0)
+    child_node.group = "leaf";
+  else
+    this.push(child_node, levels-1);
+
+  if(!(child_node._id in this.node_ids))
+  {
+    this.node_ids[child_node._id] = true;
+    this.nodes.add(child_node);
+  }
+  else
+  {
+    this.nodes.update(child_node);
+  }
+}
+
+ScholarCrawler.prototype.push = function(parent_node, levels)
+{
+  assert(levels >= 0, "levels should be non-negative");
+
+  this.stack.push([parent_node, levels]);
+  if(!parent_node.is_dummy)
+  {
+    parent_node.group = "processing";
+    if(parent_node._id in this.node_ids)
+    {
+      this.nodes.update(parent_node);
+    }
+  }
 };
 
-ScholarCrawler.prototype.push = function(url, parent_node)
+ScholarCrawler.prototype.next = function()
 {
-	this.stack.push([url, parent_node]);
-};
+  if(this.stack.length > 0)
+  {
+    var args = this.stack.pop();
+    this.add_citations(args[0], args[1]);
+  }
 
-ScholarCrawler.prototype.start = function()
-{
-	if(this.stack.length > 0)
-	{
-		var args = this.stack.pop();
-		this.process.apply(this, args);
-	}
-
-	var crawler = this;
-	setTimeout(function() { crawler.start() }, this.delay);
+  var crawler = this;
+  setTimeout(function() { crawler.next() }, 1000);
 };
