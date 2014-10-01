@@ -5,7 +5,7 @@ MainMenuView.prototype.render = function(container)
   var main_menu_div = document.createElement("div");
   $(main_menu_div).addClass("main_menu");
 
-  $(main_menu_div).load("app/templates/main_menu.html", function()
+  $(main_menu_div).load("app://root/templates/main_menu.html", function()
   {
     document.forms[0].onsubmit = function()
     {

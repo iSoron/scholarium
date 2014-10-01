@@ -1,7 +1,7 @@
 {
   "name": "Scholarium",
   "version": "0.1-pre",
-  "main": "index.html",
+  "main": "app://root/templates/index.html",
   "window": {
     "toolbar": false,
     "min_width": 400,
