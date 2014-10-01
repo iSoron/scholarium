@@ -1,3 +1,6 @@
+var scholarius_options = {
+};
+
 var visjs_options = {
   stabilize: false,
   nodes: {

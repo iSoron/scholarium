@@ -34,12 +34,12 @@ ScholarCrawler.prototype.add_citations = function(parent_node, levels)
   var crawler = this;
 
   if(parent_node.is_dummy) 
-    return this._add_citations_from_scopus(parent_node, levels);
+    return this._add_citations_from_parser(parent_node, levels);
 
   articles_db.findOne({_id: parent_node._id}, function(err, parent_article_db)
   {
     if(parent_article_db === null || !parent_article_db.is_cached)
-      crawler._add_citations_from_scopus(parent_node, levels);
+      crawler._add_citations_from_parser(parent_node, levels);
     else
       crawler._add_citations_from_db(crawler.article_to_node(parent_node.article), levels);
   });
@@ -65,7 +65,7 @@ ScholarCrawler.prototype._add_citations_from_db = function(parent_node, levels)
   });
 }
 
-ScholarCrawler.prototype._add_citations_from_scopus = function(parent_node, levels)
+ScholarCrawler.prototype._add_citations_from_parser = function(parent_node, levels)
 {
   assert(levels >= 0, "levels should be non-negative");
 

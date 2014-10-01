@@ -14,7 +14,7 @@ ShowMapView.prototype.render = function(container)
   this.nodes.add(this.map.nodes);
   this.edges.add(this.map.edges);
 
-  var parser = new ScopusParser();
+  var parser = new GenericParser();
   var crawler = new ScholarCrawler(parser, this.nodes, this.edges);
   crawler.start();
 
