@@ -1,4 +1,5 @@
 var visjs_options = {
+  stabilize: false,
   nodes: {
     borderWidth: 2,
     borderWidthSelected: 2
