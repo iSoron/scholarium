@@ -15333,7 +15333,7 @@ return /******/ (function(modules) { // webpackBootstrap
         // adjust a small offset such that the mouse cursor is located in the
         // bottom left location of the popup, and you can easily move over the
         // popup area
-        me.popup.setPosition(pointer.x - 3, pointer.y - 3);
+        me.popup.setPosition(pointer.x - 3, pointer.y + 3);
         me.popup.setText(me.popupObj.getTitle());
         me.popup.show();
       }
@@ -15956,7 +15956,6 @@ return /******/ (function(modules) { // webpackBootstrap
    * @private
    */
   Network.prototype._drawEdges = function(ctx) {
-    //return; // XXXXX
     var edges = this.edges;
     for (var id in edges) {
       if (edges.hasOwnProperty(id)) {
@@ -18742,8 +18741,10 @@ return /******/ (function(modules) { // webpackBootstrap
 
     ctx.fillStyle = this.selected ? this.options.color.highlight.background : this.hover ? this.options.color.hover.background : this.options.color.background;
     ctx[shape](this.x, this.y, this.options.radius);
+    ctx.setShadow(0, 0, 2*this.options.radius, "#fff", 0.3);
     ctx.fill();
     ctx.stroke();
+    ctx.clearShadow();
 
     if (this.label) {
       this._label(ctx, this.label, this.x, this.y + this.height / 2, undefined, 'top',true);
@@ -18985,7 +18986,7 @@ return /******/ (function(modules) { // webpackBootstrap
     styleAttr.borderRadius = "3px";
     styleAttr.MozBorderRadius = "3px";
     styleAttr.WebkitBorderRadius = "3px";
-    styleAttr.boxShadow = "3px 3px 10px rgba(128, 128, 128, 0.5)";
+    styleAttr.boxShadow = "3px 3px 10px rgba(0,0,0,0.5)";
     //styleAttr.whiteSpace = "nowrap";
 	styleAttr.maxWidth = "500px";
     this.container.appendChild(this.frame);
