@@ -4,7 +4,7 @@ var nedb = require('nedb');
 var path = require('path');
 var win = gui.Window.get();
 
-//win.maximize();
+win.maximize();
 
 function createDB(name)
 {
