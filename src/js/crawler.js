@@ -1,3 +1,21 @@
+/* Copyright (C) 2014 Alinson Xavier
+ *
+ * This file is part of Scholarium.
+ *
+ * Scholarium is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free
+ * Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this software. If not, see <http://www.gnu.org/licenses/>.
+ */
+
 function ScholarCrawler(parser, nodes, edges)
 {
   this.stack = [];
@@ -21,8 +39,8 @@ ScholarCrawler.prototype.article_to_node = function(article)
     shape: 'dot',
     mass: article.n_citations/2 + 1,
     radius: 3*Math.pow(article.n_citations, 0.8) + 3,
-    title: "<span class='node_tooltip'>" + article.authors +
-      "<a href='' onclick='return open_external(\"" + article.url + "\")' target='_blank'> "
+    title: "<span class='node_tooltip'>" + article.authors + 
+      ".<a href='' onclick='return open_external(\"" + article.url + "\")' target='_blank'> "
       + article.title + ".</a> " + article.source + ", " + article.year + ".</span>"
   };
 };
@@ -126,21 +144,13 @@ ScholarCrawler.prototype._add_child_article = function(child_article, parent_nod
     }
   }
 
-  if(child_node.article.n_citations == 0)
-    child_node.group = "standard";
-  else if(levels == 0)
-    child_node.group = "leaf";
-  else
+  if(child_article.n_citations > 0 && levels > 0)
     this.push(child_node, levels-1);
 
   if(this.nodes.getIds().indexOf(child_node._id) < 0)
-  {
     this.nodes.add(child_node);
-  }
   else
-  {
     this.nodes.update(child_node);
-  }
 }
 
 ScholarCrawler.prototype.push = function(parent_node, levels)
@@ -152,9 +162,7 @@ ScholarCrawler.prototype.push = function(parent_node, levels)
   {
     parent_node.group = "processing";
     if(this.nodes.getIds().indexOf(parent_node._id) >= 0)
-    {
       this.nodes.update(parent_node);
-    }
   }
 };
 
