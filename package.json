@@ -1,6 +1,6 @@
 {
   "name": "Scholarium",
-  "version": "0.1-pre",
+  "version": "0.0.1pre",
   "main": "app://root/templates/index.html",
   "window": {
     "toolbar": false,
@@ -8,5 +8,9 @@
     "min_height": 400,
     "width": 900,
     "height": 600
+  },
+  "dependencies": {
+    "nedb": "latest",
+    "vis": "https://github.com/iSoron/vis/tarball/scholarium"
   }
 }
