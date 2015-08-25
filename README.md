@@ -15,5 +15,5 @@ is fetched in real time from *Scopus* or *Web of Science*.
 
 [![Main screen][screen1th]][screen1]
 
-[screen1]: screenshots/scholarium.png
+[screen1]: https://github.com/isoron/scholarium/raw/master/screenshots/scholarium.png
 [screen1th]: screenshots/scholarium.thumb.png
