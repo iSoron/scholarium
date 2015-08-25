@@ -9,10 +9,11 @@ Each node of the network corresponds to a paper and each link corresponds to a
 citation. Papers with many citations are represented as large nodes. The data
 is fetched in real time from Scopus or Web of Science.
 
-*This software is currently in alpha stage.*
+<sub>This software is in alpha stage. Expect occasional bugs and incomplete features. Suggestions and pull requests are very welcome.</sub>
 
 ## Screenshots
 
-<a href="http://i.imgur.com/rMa90Be.png"><img style="border: 1px solid #ccc;
-padding: 2px" src="http://i.imgur.com/rMa90Bem.png" title="source: imgur.com"
-/></a>
+[![Main screen][screen1th]][screen1]
+
+[screen1]: screenshots/scholarium.png
+[screen1th]: screenshots/scholarium.thumb.png
