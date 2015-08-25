@@ -9,7 +9,7 @@ Each node of the network corresponds to a paper and each link corresponds to a
 citation. Papers with many citations are represented as large nodes. The data
 is fetched in real time from *Scopus* or *Web of Science*.
 
-<sub>This software is in alpha stage. Expect occasional bugs and incomplete features. Suggestions and pull requests are very welcome.</sub>
+<sub>This software is in alpha stage. Expect bugs and incomplete features. Suggestions and pull requests are very welcome.</sub>
 
 ## Screenshots
 
